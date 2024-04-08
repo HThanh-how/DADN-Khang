@@ -1,6 +1,7 @@
 import Weather from '../../components/Weather'
 import styles from './Home.module.scss'
 import Switch from '@mui/material/Switch'
+import './index.css'
 import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFan } from '@fortawesome/free-solid-svg-icons'
@@ -107,8 +108,8 @@ function Home() {
                         offsetY: 120,
                     },
                     value: {
-                        offsetY: 76,
-                        fontSize: '22px',
+                        offsetY: -10,
+                        fontSize: '25px',
                         color: undefined,
                         formatter: function (val) {
                             return val + '%'
@@ -150,8 +151,8 @@ function Home() {
                         offsetY: 120,
                     },
                     value: {
-                        offsetY: 76,
-                        fontSize: '22px',
+                        offsetY: -10,
+                        fontSize: '25px',
                         color: undefined,
                         formatter: function (val) {
                             return val + ' lux'
@@ -193,8 +194,8 @@ function Home() {
                         offsetY: 120,
                     },
                     value: {
-                        offsetY: 76,
-                        fontSize: '22px',
+                        offsetY: -10,
+                        fontSize: '40px',
                         color: undefined,
                         formatter: function (val) {
                             return val + ' °C'
@@ -224,11 +225,11 @@ function Home() {
         <div className={styles.wrapper}>
             <div className={`${styles.container} ${styles.leftCol}`}>
                 <Weather />
-                <h4 style={{ margin: '20px 0 40px 0' }}>Room temperature</h4>
+                <h4 style={{ margin: '20px 0 20px 20px' }}>Room temperature</h4>
                 <ReactApexChart options={optionsTemp} series={dataTemp} type="radialBar" />
             </div>
             <div className={styles.rightCol}>
-                <div className={`${styles.container} ${styles.userContainer}`}>
+                <div className={`${styles.container} ${styles.userContainer} ${styles.container1}`}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <h2 className={styles.hello}>Good {period}</h2>
                         <span className={styles.logoutBtn}>Logout</span>
@@ -278,7 +279,13 @@ function Home() {
                             <Slider
                                 defaultValue={0}
                                 aria-label="Default"
-                                getAriaValueText={(value) => setFanValue(value)}
+                                disabled={!checkedFan}
+                                getAriaValueText={(value) => {
+                                    setFanValue(value);
+                                }}
+                                sx={{
+                                    color: checkedFan ? 'primary.main' : 'grey.500',
+                                }}
                             />
                         </div>
                     </div>
@@ -329,7 +336,13 @@ function Home() {
                             <Slider
                                 defaultValue={0}
                                 aria-label="Default"
-                                getAriaValueText={(value) => setLightValue(value)}
+                                disabled={!checkedLight}
+                                getAriaValueText={(value) => {
+                                    setLightValue(value);
+                                }}
+                                sx={{
+                                    color: checkedLight ? 'primary.main' : 'grey.500',
+                                }}
                             />
                         </div>
                     </div>
