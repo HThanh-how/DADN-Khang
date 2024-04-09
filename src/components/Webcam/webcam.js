@@ -45,7 +45,7 @@ const WebcamCapture = () => {
         });
 
         const bboxData = response.data.bbox;
-        drawBoundingBox(bboxData); // Draw bounding box
+        drawBoundingBoxes(bboxData); // Draw bounding box
         
       } catch (error) {
         console.error('Error processing frame:', error);
@@ -60,7 +60,7 @@ const WebcamCapture = () => {
     };
   }, [webcamActive]);
 
-  const drawBoundingBox = (bboxData) => {
+  const drawBoundingBoxes = (bboxData) => {
     if (!bboxData || !canvasRef.current) return;
 
     const ctx = canvasRef.current.getContext('2d');
@@ -71,14 +71,21 @@ const WebcamCapture = () => {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     // Draw bounding box if bboxData is valid
-    if (Array.isArray(bboxData) && bboxData.length === 4) {
-      console.log(bboxData)
-      ctx.strokeStyle = 'green';
+    if (Array.isArray(bboxData)) {      
       ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.rect(bboxData[0]*ctx.canvas.width, bboxData[1]*ctx.canvas.height, bboxData[2]*ctx.canvas.width, bboxData[3]*ctx.canvas.height);
-      // ctx.rect(300, 100, 10, 10);
-      ctx.stroke();
+
+      for (let bbox of bboxData) {
+        if (bbox.length === 5) {
+          ctx.beginPath();
+          if (bbox[4] === 1) {
+            ctx.strokeStyle = 'green';
+          } else {
+            ctx.strokeStyle = 'red';
+          }
+          ctx.rect(bbox[0] * ctx.canvas.width, bbox[1] * ctx.canvas.height, bbox[2] * ctx.canvas.width, bbox[3] * ctx.canvas.height);
+          ctx.stroke();
+        }
+      }
     }
   };
 
@@ -118,7 +125,7 @@ const WebcamCapture = () => {
   return (
     <div>
       <h4>Camera</h4>
-      {webcamActive && (
+      {webcamActive && !modalIsOpen &&(
         <div style={{ position: 'relative', width: videoConstraints.width + 'px', height: videoConstraints.height + 'px', marginBottom: '20px' }}>
           <Webcam
             audio={false}
@@ -149,33 +156,52 @@ const WebcamCapture = () => {
       <button className={webcamActive ? 'deactivate-btn' : 'activate-btn'} onClick={webcamActive ? deactivateWebcam : activateWebcam}>
         {webcamActive ? 'Deactivate Camera Alarm' : 'Activate Camera Alarm'}
       </button>
-      <button className="capture-btn" onClick={openModal}>Add Authenticate User</button>
+      <button className="capture-btn" onClick={() => { activateWebcam(); openModal(); }}>Add Authenticate User</button>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         style={customStyles}
         contentLabel="Capture Image Modal"
       >
-        <h2 style={{ textAlign: 'center' }}>Capture Your Face Image</h2>
+        <h2 style={{ textAlign: 'center' }}>Add Authenticate User</h2>
+        {webcamActive && (
+        <div style={{ position: 'relative', width: videoConstraints.width + 'px', height: videoConstraints.height + 'px', marginBottom: '20px' }}>
+          <Webcam
+            audio={false}
+            ref={webcamRef}
+            screenshotFormat="image/jpeg"
+            videoConstraints={videoConstraints}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%'
+            }}
+          />
+          <canvas
+            ref={canvasRef}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              pointerEvents: 'none' // Make the canvas non-interactive
+            }}
+          />
+        </div>
+        )}
         <input
           type="text"
-          placeholder="Enter your name"
+          placeholder="Enter user name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          style={{ marginBottom: '10px' }}
+          className="input-field"
         />
-        <Webcam
-          audio={false}
-          height={400}
-          ref={webcamRef}
-          screenshotFormat="image/jpeg"
-          width={650}
-          videoConstraints={videoConstraints}
-        />
-        <canvas ref={canvasRef} style={{ display: 'none' }} /> {/* Hidden canvas */}
         <div className="button-container">
-          <button className="capture-btn" onClick={captureAndSaveImage}>Submit</button>
-          <button className="close-btn" onClick={closeModal}>Close</button>
+          <button className="capture-btn" onClick={() => { captureAndSaveImage(); deactivateWebcam(); closeModal();}}>Submit</button>
+          <button className="close-btn" onClick={() => { deactivateWebcam(); closeModal(); }}>Close</button>
         </div>
       </Modal>
     </div>

@@ -13,6 +13,18 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app = Flask(__name__)
 CORS(app)  
 
+# Warming up code
+ref_image_path = r"E:\\BK\\232\\smart-home\\backend\\file_db\\khai\\0.jpeg"
+ref_image = np.array(Image.open(ref_image_path))[:, :, ::-1]
+verify = DeepFace.verify(ref_image, 
+                         ref_image,
+                         detector_backend='skip',
+                         model_name='GhostFaceNet')['verified']
+try:
+    DeepFace.extract_faces(ref_image, detector_backend="yunet")
+except:
+    pass
+
 class IOTState:
     def __init__(self):
         self.fan: dict = {'state': 0, # 0 - off, 1 - on
@@ -41,32 +53,45 @@ def update_fan():
     type = request.args.get('type')
     name = request.args.get('name')
     
-    if name == 'fan':
-        upObject = iotState.fan
-    else:
-        upObject = iotState.light
+    try:
+        if name == 'fan':
+            upObject = iotState.fan
+        else:
+            upObject = iotState.light
 
-    if type == 'int':
-        upObject['value'] = int(value)
-        print(f'{name} value: {int(value)}')
-    else:
-        value = True if value == 'true' else False
-        upObject['state'] = value
-        print(f'{name} state: {bool(value)}')
-
+        if type == 'int':
+            upObject['value'] = int(value)
+            print(f'{name} value: {int(value)}')
+        else:
+            value = True if value == 'true' else False
+            upObject['state'] = value
+            print(f'{name} state: {bool(value)}')
+    except:
+        pass
+     
     return {'value': value}
 
 @app.route('/save_image', methods=['POST', 'GET'])
 def save_image():
     data = request.get_json()
     result = data['image']
+    name = data['name'].lower()
+
     b = bytes(result, 'utf-8')
     image = b[b.find(b'/9'):]
     image = Image.open(io.BytesIO(base64.b64decode(image)))
+    image = np.array(image)[:, :, ::-1]
 
-    os.makedirs(os.path.join(UPLOAD_FOLDER, data['name']))
-    image_path = os.path.join(UPLOAD_FOLDER, data['name'], 'captured_image.jpeg')
-    image.save(image_path)
+    detect_result = DeepFace.extract_faces(image, detector_backend="yolov8")[0]['facial_area']
+    bbox = [detect_result['x'], detect_result['y'], detect_result['w'], detect_result['h']]
+
+    x, y, w, h = bbox
+    face_region = image[y:y+h, x:x+w, ::-1]
+
+    os.makedirs(os.path.join(UPLOAD_FOLDER, name), exist_ok=True)
+    image_path = os.path.join(UPLOAD_FOLDER, name, f'0.jpeg')
+    face_image = Image.fromarray(face_region)
+    face_image.save(image_path)
 
     return jsonify({'message': 'Image saved successfully',
                     'image_path': image_path}), 200
@@ -83,17 +108,32 @@ def get_bbox():
 
     image = b[b.find(b'/9'):]
     image = Image.open(io.BytesIO(base64.b64decode(image)))
-    # image.save('E:\\BK\\232\\smart-home\\src\\test.jpeg')
     image = np.array(image)[:, :, ::-1]
     image_h, image_w = image.shape[:2]
 
     try:
-        detect_result = DeepFace.extract_faces(image, detector_backend="yolov8")[0]['facial_area']
-        bbox = [detect_result['x']/image_w, detect_result['y']/image_h, detect_result['w']/image_w, detect_result['h']/image_h]
+        bboxes = []
+        detect_results = DeepFace.extract_faces(image, detector_backend="yunet")
+
+        ref_image_path = r"E:\\BK\\232\\smart-home\\backend\\file_db\\khai\\0.jpeg"
+        ref_image = np.array(Image.open(ref_image_path))[:, :, ::-1]
+
+        for detect_result in detect_results:
+            detect_result = detect_result['facial_area']
+            face_region = image[detect_result['y']:detect_result['y']+detect_result['h'], detect_result['x']:detect_result['x']+detect_result['w']]
+            
+            verify = DeepFace.verify(face_region, 
+                                     ref_image,
+                                     detector_backend='skip',
+                                     model_name='GhostFaceNet')['verified']
+                        
+            bbox = [detect_result['x']/image_w, detect_result['y']/image_h, detect_result['w']/image_w, detect_result['h']/image_h, int(verify)]
+            bboxes.append(bbox)
     except:
         return jsonify({'bbox': None})
 
-    return jsonify({'bbox': bbox})
+    return jsonify({'bbox': bboxes})
 
 if __name__ == '__main__':
    app.run(port=5000, debug=True)
+    # app.run(port=5000)

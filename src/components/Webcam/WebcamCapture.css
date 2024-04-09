@@ -40,3 +40,19 @@
   margin-top: 20px; /* Adjust the top margin as needed */
 }
 
+.input-field {
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+  width: 100%;
+  max-width: 300px; /* Adjust width as needed */
+  transition: border-color 0.3s ease-in-out;
+  display: block;
+  margin: 0 auto; /* Center horizontally */
+}
+
+.input-field:focus {
+  border-color: #007bff; /* Change border color on focus */
+}
