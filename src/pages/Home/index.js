@@ -250,6 +250,7 @@ function Home() {
                                 checked={checkedFan}
                                 onChange={(e) => setCheckedFan(e.target.checked)}
                                 inputProps={{ 'aria-label': 'controlled' }}
+                                style={{color: '#FFDF00'}}
                             />
                         </div>
 
@@ -262,10 +263,10 @@ function Home() {
                             >
                                 <FontAwesomeIcon
                                     icon={faFan}
-                                    style={{ color: 'rgba(0, 0, 182, 0.78)' }}
+                                    style={{ color: '#FFDF00' }}
                                 />{' '}
                                 &nbsp; &nbsp;
-                                <span style={{ color: 'rgba(0, 0, 182, 0.78)' }}>Strength</span>
+                                <span style={{ color: '#FFDF00' }}>Strength</span>
                             </div>
                             <span style={{ width: '35px' }}>{fanValue}%</span>
                         </div>
@@ -283,7 +284,7 @@ function Home() {
                                     setFanValue(value);
                                 }}
                                 sx={{
-                                    color: checkedFan ? 'primary.main' : 'grey.500',
+                                    color: checkedFan ? '#FFDF00' : 'grey.500',
                                 }}
                             />
                         </div>
@@ -307,6 +308,7 @@ function Home() {
                                 checked={checkedLight}
                                 onChange={(e) => setCheckedLight(e.target.checked)}
                                 inputProps={{ 'aria-label': 'controlled' }}
+                                style={{color: '#0088FF'}}
                             />
                         </div>
 
@@ -319,10 +321,10 @@ function Home() {
                             >
                                 <FontAwesomeIcon
                                     icon={faSun}
-                                    style={{ color: 'rgb(219, 219, 0)' }}
+                                    style={{ color: '#0088FF' }}
                                 />{' '}
                                 &nbsp; &nbsp;
-                                <span style={{ color: 'rgb(219, 219, 0)' }}>Intensity</span>
+                                <span style={{ color: '#0088FF' }}>Intensity</span>
                             </div>
                             <span style={{ width: '35px' }}>{lightValue}%</span>
                         </div>
@@ -340,7 +342,7 @@ function Home() {
                                     setLightValue(value);
                                 }}
                                 sx={{
-                                    color: checkedLight ? 'primary.main' : 'grey.500',
+                                    color: checkedLight ? '#0088FF' : 'grey.500',
                                 }}
                             />
                         </div>
