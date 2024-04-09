@@ -13,6 +13,7 @@
 }
 
 .leftCol {
+    background-color: rgb(51, 245, 180);
     /* width: 100%; */
 }
 
@@ -77,4 +78,29 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.lightning{
+    border-radius: 20px;
+    background-color: azure;
+}
+
+.roomBrightness{
+    border-radius: 20px;
+    background-color: rgb(222, 235, 48);
+}
+
+.theftAlarm{
+    border-radius: 20px;
+    background-color: rgb(255, 0, 0);
+}
+
+.humidity{
+    border-radius: 20px;
+    background-color: rgb(0, 255, 0);
+}
+
+.fan{
+    border-radius: 20px;
+    background-color: rgb(0, 0, 255);
 }

@@ -1,7 +1,6 @@
 import Weather from '../../components/Weather'
 import styles from './Home.module.scss'
 import Switch from '@mui/material/Switch'
-import './index.css'
 import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFan } from '@fortawesome/free-solid-svg-icons'
@@ -225,7 +224,7 @@ function Home() {
         <div className={styles.wrapper}>
             <div className={`${styles.container} ${styles.leftCol}`}>
                 <Weather />
-                <h4 style={{ margin: '20px 0 20px 20px' }}>Room temperature</h4>
+                <h4 style={{ margin: '20px 0 20px 20px', fontSize: '20pt' }}>Room temperature</h4>
                 <ReactApexChart options={optionsTemp} series={dataTemp} type="radialBar" />
             </div>
             <div className={styles.rightCol}>
@@ -244,7 +243,7 @@ function Home() {
                     </div>
                 </div>
                 <div className={styles.deviceContainer}>
-                    <div className={`${styles.container} ${styles.switchContainer}`}>
+                    <div className={`${styles.container} ${styles.switchContainer} ${styles.fan}`}>
                         <div className={styles.headingAndSwitch}>
                             <h4 className={styles.switchHeading}>Fan</h4>
                             <Switch
@@ -289,8 +288,8 @@ function Home() {
                             />
                         </div>
                     </div>
-                    <div className={styles.container}>
-                        <h4>Humidity</h4>
+                    <div className={`${styles.container} ${styles.humidity}`} >
+                        <h4 style = {{fontSize: '20pt'}}>Humidity</h4>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                             <ReactApexChart
                                 options={optionsHumid}
@@ -301,7 +300,7 @@ function Home() {
                     </div>
                 </div>
                 <div className={styles.deviceContainer}>
-                    <div className={`${styles.container} ${styles.switchContainer}`}>
+                    <div className={`${styles.container} ${styles.switchContainer} ${styles.lightning}`}>
                         <div className={styles.headingAndSwitch}>
                             <h4 className={styles.switchHeading}>Lighting</h4>
                             <Switch
@@ -346,8 +345,8 @@ function Home() {
                             />
                         </div>
                     </div>
-                    <div className={`${styles.container} ${styles.roomContainer}`}>
-                        <h4>Room brightness</h4>
+                    <div className={`${styles.container} ${styles.roomContainer} ${styles.roomBrightness}`}>
+                        <h4 style = {{fontSize: '20pt'}}>Room brightness</h4>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                             <ReactApexChart
                                 options={optionsLight}
@@ -357,7 +356,7 @@ function Home() {
                         </div>
                     </div>
                 </div>
-                <div className={`${styles.container} ${styles.alarmContainer}`}>
+                <div className={`${styles.container} ${styles.alarmContainer} ${styles.theftAlarm}`}>
                     <h4>Theft Alarm</h4>
                     <div className={styles.switchAlarm}>
                         <Switch

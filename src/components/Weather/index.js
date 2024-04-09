@@ -40,7 +40,7 @@ function Weather() {
     return (
         <div className={cx('weather-app')}>
           
-            <h4>Temperature Outside</h4>
+            <h4 style = {{fontSize: '20pt'}}>Temperature Outside</h4>
             <WeatherForm onChangeCity={handleChangeCity} />
             {weather ? (
                 <>
