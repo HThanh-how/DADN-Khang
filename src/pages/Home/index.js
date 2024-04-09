@@ -1,13 +1,30 @@
 import Weather from '../../components/Weather'
 import styles from './Home.module.scss'
 import Switch from '@mui/material/Switch'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFan } from '@fortawesome/free-solid-svg-icons'
 import { Slider } from '@mui/material'
 import { faSun } from '@fortawesome/free-regular-svg-icons'
 import ReactApexChart from 'react-apexcharts'
 import { useNavigate } from 'react-router-dom'
+import WebcamCapture from '../../components/Webcam/webcam.js';
+
+async function sendDataToServer(value, type, name) {
+    try {
+        const response = await fetch(`/send_data?value=${value}&type=${type}&name=${name}`);
+        const data = await response.json();
+        console.log({ data });
+    } catch (error) {
+        console.error('Error sending data:', error);
+    }
+}
+
+function useDataSender(value, type, name, dependency) {
+    useEffect(() => {
+        sendDataToServer(value, type, name);
+    }, [dependency]);
+}
 
 function Home() {
     // var options = {
@@ -87,9 +104,11 @@ function Home() {
     const [fanValue, setFanValue] = useState()
     const [lightValue, setLightValue] = useState()
 
-    let dataHumid = [67],
-        dataLight = [79],
-        dataTemp = [34]
+
+    const [dataTemp, setDataTemp] = useState([34])
+    const [dataHumid, setDataHumid] = useState([67])
+    const [dataLight, setDataLight] = useState([79])
+    
     let optionsHumid = {
         chart: {
             height: 350,
@@ -220,11 +239,48 @@ function Home() {
         labels: [''],
     }
 
+    // useEffect(() => {
+    //     fetch(`/send_data?value=${fanValue}&type=int`).then(res => res.json()).then(data => {
+    //         console.log({data});
+    //     })
+    // }, [fanValue])
+    useDataSender(fanValue, 'int', 'fan', fanValue);
+    useDataSender(checkedFan, 'bool', 'fan', checkedFan);
+    useDataSender(lightValue, 'int', 'light', lightValue);
+    useDataSender(checkedLight, 'bool', 'light', checkedLight);
+
+    useEffect(() => {
+        // Function to fetch data from the API
+        const fetchData = async () => {
+          try {
+            const response = await fetch('/fetch_data');
+            const jsonData = await response.json();
+            // Update state with fetched data
+            setDataTemp([jsonData.temperature]);
+            setDataHumid([jsonData.humidity]);
+            setDataLight([jsonData.brightness]);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        };
+    
+        // Fetch data initially
+        fetchData();
+    
+        // Fetch data every 5 seconds (5000 milliseconds)
+        const intervalId = setInterval(fetchData, 5000);
+    
+        // Clean up function to clear the interval when the component unmounts
+        return () => clearInterval(intervalId);
+      }, []); // Empty dependency array ensures this effect runs only once on component mount
+    
+
     return (
         <div className={styles.wrapper}>
             <div className={`${styles.container} ${styles.leftCol}`}>
-                <Weather />
-                <h4 style={{ margin: '20px 0 20px 20px', fontSize: '20pt' }}>Room temperature</h4>
+                {/* <Weather /> */}
+                <WebcamCapture/>
+                <h4 style={{ margin: '20px 0 40px 0' }}>Room temperature</h4>
                 <ReactApexChart options={optionsTemp} series={dataTemp} type="radialBar" />
             </div>
             <div className={styles.rightCol}>
