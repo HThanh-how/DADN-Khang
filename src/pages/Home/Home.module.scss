@@ -31,7 +31,7 @@
     border-radius: 20px;
     padding: 6px 20px;
     color: white;
-    background-color: rgba(0, 0, 182, 0.78);
+    background-color: rgba(0, 100, 182, 0.78);
     cursor: pointer;
 
     &:hover {
@@ -82,7 +82,7 @@
 
 .lightning{
     border-radius: 20px;
-    background-color: azure;
+    background-color: rgb(142, 231, 231);
 }
 
 .roomBrightness{
@@ -92,15 +92,15 @@
 
 .theftAlarm{
     border-radius: 20px;
-    background-color: rgb(255, 0, 0);
+    background-color: rgb(255, 150, 50);
 }
 
 .humidity{
     border-radius: 20px;
-    background-color: rgb(0, 255, 0);
+    background-color: rgb(142, 255, 100);
 }
 
 .fan{
     border-radius: 20px;
-    background-color: rgb(0, 0, 255);
+    background-color: #5975e4;
 }
