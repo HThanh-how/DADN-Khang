@@ -126,8 +126,8 @@ function Home() {
                         offsetY: 120,
                     },
                     value: {
-                        offsetY: 76,
-                        fontSize: '22px',
+                        offsetY: -10,
+                        fontSize: '25px',
                         color: undefined,
                         formatter: function (val) {
                             return val + '%'
@@ -169,8 +169,8 @@ function Home() {
                         offsetY: 120,
                     },
                     value: {
-                        offsetY: 76,
-                        fontSize: '22px',
+                        offsetY: -10,
+                        fontSize: '25px',
                         color: undefined,
                         formatter: function (val) {
                             return val + ' lux'
@@ -212,8 +212,8 @@ function Home() {
                         offsetY: 120,
                     },
                     value: {
-                        offsetY: 76,
-                        fontSize: '22px',
+                        offsetY: -10,
+                        fontSize: '40px',
                         color: undefined,
                         formatter: function (val) {
                             return val + ' °C'
@@ -284,7 +284,7 @@ function Home() {
                 <ReactApexChart options={optionsTemp} series={dataTemp} type="radialBar" />
             </div>
             <div className={styles.rightCol}>
-                <div className={`${styles.container} ${styles.userContainer}`}>
+                <div className={`${styles.container} ${styles.userContainer} ${styles.container1}`}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <h2 className={styles.hello}>Good {period}</h2>
                         <span className={styles.logoutBtn}>Logout</span>
@@ -299,13 +299,14 @@ function Home() {
                     </div>
                 </div>
                 <div className={styles.deviceContainer}>
-                    <div className={`${styles.container} ${styles.switchContainer}`}>
+                    <div className={`${styles.container} ${styles.switchContainer} ${styles.fan}`}>
                         <div className={styles.headingAndSwitch}>
                             <h4 className={styles.switchHeading}>Fan</h4>
                             <Switch
                                 checked={checkedFan}
                                 onChange={(e) => setCheckedFan(e.target.checked)}
                                 inputProps={{ 'aria-label': 'controlled' }}
+                                style={{color: '#FFDF00'}}
                             />
                         </div>
 
@@ -318,10 +319,10 @@ function Home() {
                             >
                                 <FontAwesomeIcon
                                     icon={faFan}
-                                    style={{ color: 'rgba(0, 0, 182, 0.78)' }}
+                                    style={{ color: '#FFDF00' }}
                                 />{' '}
                                 &nbsp; &nbsp;
-                                <span style={{ color: 'rgba(0, 0, 182, 0.78)' }}>Strength</span>
+                                <span style={{ color: '#FFDF00' }}>Strength</span>
                             </div>
                             <span style={{ width: '35px' }}>{fanValue}%</span>
                         </div>
@@ -334,12 +335,18 @@ function Home() {
                             <Slider
                                 defaultValue={0}
                                 aria-label="Default"
-                                getAriaValueText={(value) => setFanValue(value)}
+                                disabled={!checkedFan}
+                                getAriaValueText={(value) => {
+                                    setFanValue(value);
+                                }}
+                                sx={{
+                                    color: checkedFan ? '#FFDF00' : 'grey.500',
+                                }}
                             />
                         </div>
                     </div>
-                    <div className={styles.container}>
-                        <h4>Humidity</h4>
+                    <div className={`${styles.container} ${styles.humidity}`} >
+                        <h4 style = {{fontSize: '20pt'}}>Humidity</h4>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                             <ReactApexChart
                                 options={optionsHumid}
@@ -350,13 +357,14 @@ function Home() {
                     </div>
                 </div>
                 <div className={styles.deviceContainer}>
-                    <div className={`${styles.container} ${styles.switchContainer}`}>
+                    <div className={`${styles.container} ${styles.switchContainer} ${styles.lightning}`}>
                         <div className={styles.headingAndSwitch}>
                             <h4 className={styles.switchHeading}>Lighting</h4>
                             <Switch
                                 checked={checkedLight}
                                 onChange={(e) => setCheckedLight(e.target.checked)}
                                 inputProps={{ 'aria-label': 'controlled' }}
+                                style={{color: '#0088FF'}}
                             />
                         </div>
 
@@ -369,10 +377,10 @@ function Home() {
                             >
                                 <FontAwesomeIcon
                                     icon={faSun}
-                                    style={{ color: 'rgb(219, 219, 0)' }}
+                                    style={{ color: '#0088FF' }}
                                 />{' '}
                                 &nbsp; &nbsp;
-                                <span style={{ color: 'rgb(219, 219, 0)' }}>Intensity</span>
+                                <span style={{ color: '#0088FF' }}>Intensity</span>
                             </div>
                             <span style={{ width: '35px' }}>{lightValue}%</span>
                         </div>
@@ -385,12 +393,18 @@ function Home() {
                             <Slider
                                 defaultValue={0}
                                 aria-label="Default"
-                                getAriaValueText={(value) => setLightValue(value)}
+                                disabled={!checkedLight}
+                                getAriaValueText={(value) => {
+                                    setLightValue(value);
+                                }}
+                                sx={{
+                                    color: checkedLight ? '#0088FF' : 'grey.500',
+                                }}
                             />
                         </div>
                     </div>
-                    <div className={`${styles.container} ${styles.roomContainer}`}>
-                        <h4>Room brightness</h4>
+                    <div className={`${styles.container} ${styles.roomContainer} ${styles.roomBrightness}`}>
+                        <h4 style = {{fontSize: '20pt'}}>Room brightness</h4>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                             <ReactApexChart
                                 options={optionsLight}
@@ -400,7 +414,7 @@ function Home() {
                         </div>
                     </div>
                 </div>
-                <div className={`${styles.container} ${styles.alarmContainer}`}>
+                <div className={`${styles.container} ${styles.alarmContainer} ${styles.theftAlarm}`}>
                     <h4>Theft Alarm</h4>
                     <div className={styles.switchAlarm}>
                         <Switch

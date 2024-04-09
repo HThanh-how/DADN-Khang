@@ -13,6 +13,7 @@
 }
 
 .leftCol {
+    background-color: rgb(51, 245, 180);
     /* width: 100%; */
 }
 
@@ -30,7 +31,7 @@
     border-radius: 20px;
     padding: 6px 20px;
     color: white;
-    background-color: rgba(0, 0, 182, 0.78);
+    background-color: rgba(0, 100, 182, 0.78);
     cursor: pointer;
 
     &:hover {
@@ -77,4 +78,29 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.lightning{
+    border-radius: 20px;
+    background-color: rgb(142, 231, 231);
+}
+
+.roomBrightness{
+    border-radius: 20px;
+    background-color: rgb(222, 235, 48);
+}
+
+.theftAlarm{
+    border-radius: 20px;
+    background-color: rgb(255, 150, 50);
+}
+
+.humidity{
+    border-radius: 20px;
+    background-color: rgb(142, 255, 100);
+}
+
+.fan{
+    border-radius: 20px;
+    background-color: #5975e4;
 }

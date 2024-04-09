@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 // import Loading from "../Weather/Loading";
 import WeatherForm from '../Weather/WeatherForm'
 import WeatherDetails from '../Weather/WeatherDetails'
+import Divider from '@mui/material/Divider';
 
 import classNames from 'classnames/bind'
 import styles from './Weather.module.scss'
@@ -38,7 +39,8 @@ function Weather() {
 
     return (
         <div className={cx('weather-app')}>
-            <h4>Temperature Outside</h4>
+          
+            <h4 style = {{fontSize: '20pt'}}>Temperature Outside</h4>
             <WeatherForm onChangeCity={handleChangeCity} />
             {weather ? (
                 <>
@@ -47,6 +49,7 @@ function Weather() {
             ) : (
                 <RingLoader color="navy" loading={true} cssOverride={override} />
             )}
+              <Divider style={{margin: "20px"}}/>
         </div>
     )
 }
