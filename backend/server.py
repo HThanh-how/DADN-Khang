@@ -1,48 +1,37 @@
 import os
 import io
 import base64
-from PIL import Image
 import numpy as np
+from utils import IOTState
+from PIL import Image
 from flask_cors import CORS 
 from deepface import DeepFace
 from flask import Flask, request, jsonify
-
-UPLOAD_FOLDER = 'backend\\file_db'
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+from flask_mqtt import Mqtt
 
 app = Flask(__name__)
 CORS(app)  
 
-# Warming up code
-ref_image_path = r"E:\\BK\\232\\smart-home\\backend\\file_db\\khai\\0.jpeg"
-ref_image = np.array(Image.open(ref_image_path))[:, :, ::-1]
-verify = DeepFace.verify(ref_image, 
-                         ref_image,
-                         detector_backend='skip',
-                         model_name='GhostFaceNet')['verified']
-try:
-    DeepFace.extract_faces(ref_image, detector_backend="yunet")
-except:
-    pass
+# MQTT Config
+app.config['MQTT_BROKER_URL'] = 'mqtt.ohstem.vn'
+app.config['MQTT_BROKER_PORT'] = 1883
+app.config['MQTT_USERNAME'] = 'trinhxuankhai' 
+app.config['MQTT_PASSWORD'] = '' 
+app.config['MQTT_KEEPALIVE'] = 5  
+app.config['MQTT_TLS_ENABLED'] = False  
 
-class IOTState:
-    def __init__(self):
-        self.fan: dict = {'state': 0, # 0 - off, 1 - on
-                          'value': 0}
-        self.light: dict = {'state': 0, # 0 - off, 1 - on
-                            'value': 0}
-        self.temperature: float = 0
-        self.humidity: float = 0
-        self.brightness: float = 0
+MQTT_USERNAME = "trinhxuankhai"
+MQTT_TOPIC_PUB = MQTT_USERNAME + "/feeds/input"
+MQTT_TOPIC_SUB = MQTT_USERNAME + "/feeds/output"
+mqtt_client = Mqtt(app)
 
+# IOT State
 iotState = IOTState()
+UPLOAD_FOLDER = 'backend\\file_db'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route('/fetch_data')
-def get_temperature():
-    iotState.temperature = iotState.temperature + 1
-    iotState.humidity = iotState.humidity + 1
-    iotState.brightness = iotState.brightness + 1
-    
+def get_temperature():  
     return {'temperature': iotState.temperature,
             'humidity': iotState.humidity,
             'brightness': iotState.brightness}
@@ -134,6 +123,39 @@ def get_bbox():
 
     return jsonify({'bbox': bboxes})
 
+@mqtt_client.on_connect()
+def handle_connect(client, userdata, flags, rc):
+    if rc == 0:
+        print('Connected successfully')
+        mqtt_client.subscribe(MQTT_TOPIC_SUB) # subscribe topic
+    else:
+        print('Bad connection. Code:', rc)
+
+@mqtt_client.on_message()
+def handle_mqtt_message(client, userdata, message):
+    data = dict(
+        topic=message.topic,
+        payload=message.payload.decode()
+    )
+    
+    data['payload'] = eval(data['payload'])
+    temperature, humidity, brightness = data['payload'][0], data['payload'][1], data['payload'][2]
+    iotState.temperature = temperature
+    iotState.humidity = humidity
+    iotState.brightness = brightness
+
 if __name__ == '__main__':
    app.run(port=5000, debug=True)
-    # app.run(port=5000)
+
+
+# # Warming up code
+# ref_image_path = r"E:\\BK\\232\\smart-home\\backend\\file_db\\khai\\0.jpeg"
+# ref_image = np.array(Image.open(ref_image_path))[:, :, ::-1]
+# verify = DeepFace.verify(ref_image, 
+#                          ref_image,
+#                          detector_backend='skip',
+#                          model_name='GhostFaceNet')['verified']
+# try:
+#     DeepFace.extract_faces(ref_image, detector_backend="yunet")
+# except:
+#     pass

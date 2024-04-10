@@ -268,7 +268,7 @@ function Home() {
         fetchData();
     
         // Fetch data every 5 seconds (5000 milliseconds)
-        const intervalId = setInterval(fetchData, 5000);
+        const intervalId = setInterval(fetchData, 500);
     
         // Clean up function to clear the interval when the component unmounts
         return () => clearInterval(intervalId);
