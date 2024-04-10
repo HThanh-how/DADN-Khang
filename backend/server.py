@@ -145,7 +145,7 @@ def handle_mqtt_message(client, userdata, message):
     iotState.brightness = brightness
 
 if __name__ == '__main__':
-   app.run(port=5000, debug=True)
+   app.run(port=5001, debug=True)
 
 
 # # Warming up code

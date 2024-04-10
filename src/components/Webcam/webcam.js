@@ -40,7 +40,7 @@ const WebcamCapture = () => {
       const imageSrc = webcamRef.current.getScreenshot();
 
       try {
-        const response = await axios.post('http://127.0.0.1:5000/process_frame', {
+        const response = await axios.post('http://127.0.0.1:5001/process_frame', {
           frame: imageSrc
         });
 
@@ -108,7 +108,7 @@ const WebcamCapture = () => {
   const captureAndSaveImage = () => {
     const imageSrc = webcamRef.current.getScreenshot();
 
-    axios.post('http://127.0.0.1:5000/save_image', { 
+    axios.post('http://127.0.0.1:5001/save_image', { 
       image: imageSrc,
       name: name
     })
