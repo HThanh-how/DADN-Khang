@@ -55,6 +55,14 @@ def update_fan():
             value = True if value == 'true' else False
             upObject['state'] = value
             print(f'{name} state: {bool(value)}')
+    
+        if name == 'fan':
+            if iotState.fan['state']:
+                publish_result = mqtt_client.publish(MQTT_TOPIC_PUB, int(iotState.fan['value']))
+            else:
+                publish_result = mqtt_client.publish(MQTT_TOPIC_PUB, 0)
+
+            print(publish_result)
     except:
         pass
      
