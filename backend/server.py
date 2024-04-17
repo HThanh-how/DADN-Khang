@@ -2,12 +2,12 @@ import os
 import io
 import base64
 import numpy as np
-from utils import IOTState
 from PIL import Image
+from utils import IOTState
+from flask_mqtt import Mqtt
 from flask_cors import CORS 
 from deepface import DeepFace
 from flask import Flask, request, jsonify
-from flask_mqtt import Mqtt
 
 app = Flask(__name__)
 CORS(app)  
