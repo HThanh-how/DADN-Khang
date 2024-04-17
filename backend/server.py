@@ -32,11 +32,32 @@ iotState = IOTState()
 UPLOAD_FOLDER = 'backend/file_db'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+# Warming up code
+ref_image_path = r"backend/file_db/khánh/0.jpeg"
+ref_image = np.array(Image.open(ref_image_path))[:, :, ::-1]
+verify = DeepFace.verify(ref_image, 
+                         ref_image,
+                         detector_backend='skip',
+                         model_name='GhostFaceNet')['verified']
+try:
+    DeepFace.extract_faces(ref_image, detector_backend="yunet")
+except:
+    pass
+
 @app.route('/fetch_data')
 def get_temperature():  
     return {'temperature': iotState.temperature,
             'humidity': iotState.humidity,
             'brightness': iotState.brightness}
+
+@app.route('/check_alarm')
+def check_alarm():
+    value = request.args.get('value')
+    if value == 'true':
+        publish_result = mqtt_client.publish(MQTT_USERNAME + "/feeds/alarm_active", 1)
+    else: 
+        publish_result = mqtt_client.publish(MQTT_USERNAME + "/feeds/alarm_active", 0)
+    return {'value': value}
 
 @app.route('/send_light')
 def send_light():
@@ -179,14 +200,3 @@ if __name__ == '__main__':
    app.run(port=5001, debug=True)
 
 
-# # Warming up code
-# ref_image_path = r"E:\\BK\\232\\smart-home\\backend\\file_db\\khai\\0.jpeg"
-# ref_image = np.array(Image.open(ref_image_path))[:, :, ::-1]
-# verify = DeepFace.verify(ref_image, 
-#                          ref_image,
-#                          detector_backend='skip',
-#                          model_name='GhostFaceNet')['verified']
-# try:
-#     DeepFace.extract_faces(ref_image, detector_backend="yunet")
-# except:
-#     pass

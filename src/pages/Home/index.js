@@ -204,6 +204,11 @@ function Home() {
             console.log({data});
         })
     }, [checkedLight])
+    useEffect(() => {
+        fetch(`/check_alarm?value=${checkedAlarm}`).then(res => res.json()).then(data => {
+            console.log({data});
+        })
+    }, [checkedAlarm])
 
     useDataSender(fanValue, 'int', 'fan', fanValue);
     useDataSender(checkedFan, 'bool', 'fan', checkedFan);
