@@ -22,12 +22,13 @@ app.config['MQTT_TLS_ENABLED'] = False
 
 MQTT_USERNAME = "trinhxuankhai"
 MQTT_TOPIC_PUB = MQTT_USERNAME + "/feeds/input"
+MQTT_TOPIC_PUB_ALARM = MQTT_USERNAME + "/feeds/alarm"
 MQTT_TOPIC_SUB = MQTT_USERNAME + "/feeds/output"
 mqtt_client = Mqtt(app)
 
 # IOT State
 iotState = IOTState()
-UPLOAD_FOLDER = 'backend\\file_db'
+UPLOAD_FOLDER = 'backend/file_db'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route('/fetch_data')
@@ -112,7 +113,7 @@ def get_bbox():
         bboxes = []
         detect_results = DeepFace.extract_faces(image, detector_backend="yunet")
 
-        ref_image_path = r"E:\\BK\\232\\smart-home\\backend\\file_db\\khai\\0.jpeg"
+        ref_image_path = r"backend/file_db/khánh/0.jpeg"
         ref_image = np.array(Image.open(ref_image_path))[:, :, ::-1]
 
         for detect_result in detect_results:
@@ -123,7 +124,11 @@ def get_bbox():
                                      ref_image,
                                      detector_backend='skip',
                                      model_name='GhostFaceNet')['verified']
-                        
+            
+            if not verify:
+                publish_result = mqtt_client.publish(MQTT_TOPIC_PUB_ALARM, 1)
+                print('Alarm!!!!')
+
             bbox = [detect_result['x']/image_w, detect_result['y']/image_h, detect_result['w']/image_w, detect_result['h']/image_h, int(verify)]
             bboxes.append(bbox)
     except:
