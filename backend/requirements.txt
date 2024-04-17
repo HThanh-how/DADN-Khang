@@ -1,7 +1,6 @@
 numpy
 flask
+deepface
 flask_cors
-deepface
-ultralytics
 flask_mqtt
-deepface
+ultralytics

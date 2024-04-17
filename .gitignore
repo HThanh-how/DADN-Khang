@@ -2,3 +2,4 @@ node_modules/
 backend/file_db/
 README_OLD.md
 __pycache__/
+backend/test/

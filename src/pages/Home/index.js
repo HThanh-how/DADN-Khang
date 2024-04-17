@@ -10,6 +10,9 @@ import ReactApexChart from 'react-apexcharts'
 import { useNavigate } from 'react-router-dom'
 import WebcamCapture from '../../components/Webcam/webcam.js';
 
+import { Select, MenuItem } from '@mui/material'; // Import Select and MenuItem
+
+
 async function sendDataToServer(value, type, name) {
     try {
         const response = await fetch(`/send_data?value=${value}&type=${type}&name=${name}`);
@@ -27,57 +30,6 @@ function useDataSender(value, type, name, dependency) {
 }
 
 function Home() {
-    // var options = {
-    //     chart: {
-    //         height: 280,
-    //         type: 'radialBar',
-    //     },
-    //     series: [67],
-    //     colors: ['#20E647'],
-    //     plotOptions: {
-    //         radialBar: {
-    //             hollow: {
-    //                 margin: 0,
-    //                 size: '70%',
-    //                 background: '#293450',
-    //             },
-    //             track: {
-    //                 dropShadow: {
-    //                     enabled: true,
-    //                     top: 2,
-    //                     left: 0,
-    //                     blur: 4,
-    //                     opacity: 0.15,
-    //                 },
-    //             },
-    //             dataLabels: {
-    //                 name: {
-    //                     offsetY: -10,
-    //                     color: '#fff',
-    //                     fontSize: '13px',
-    //                 },
-    //                 value: {
-    //                     color: '#fff',
-    //                     fontSize: '30px',
-    //                     show: true,
-    //                 },
-    //             },
-    //         },
-    //     },
-    //     fill: {
-    //         type: 'gradient',
-    //         gradient: {
-    //             shade: 'dark',
-    //             type: 'vertical',
-    //             gradientToColors: ['#87D4F9'],
-    //             stops: [0, 100],
-    //         },
-    //     },
-    //     stroke: {
-    //         lineCap: 'round',
-    //     },
-    //     labels: ['Progress'],
-    // }
     const navigate = useNavigate()
 
     const user = {
@@ -108,6 +60,11 @@ function Home() {
     const [dataTemp, setDataTemp] = useState([34])
     const [dataHumid, setDataHumid] = useState([67])
     const [dataLight, setDataLight] = useState([79])
+
+    const [selectedOption, setSelectedOption] = useState('');
+    const handleSelectChange = (event) => {
+        setSelectedOption(event.target.value);
+    };
     
     let optionsHumid = {
         chart: {
@@ -239,11 +196,12 @@ function Home() {
         labels: [''],
     }
 
-    // useEffect(() => {
-    //     fetch(`/send_data?value=${fanValue}&type=int`).then(res => res.json()).then(data => {
-    //         console.log({data});
-    //     })
-    // }, [fanValue])
+    useEffect(() => {
+        fetch(`/send_data?value=${fanValue}&type=int`).then(res => res.json()).then(data => {
+            console.log({data});
+        })
+    }, [selectedOption])
+
     useDataSender(fanValue, 'int', 'fan', fanValue);
     useDataSender(checkedFan, 'bool', 'fan', checkedFan);
     useDataSender(lightValue, 'int', 'light', lightValue);
@@ -367,40 +325,24 @@ function Home() {
                                 style={{color: '#0088FF'}}
                             />
                         </div>
-
-                        <div className={styles.switchIcon}>
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                }}
+                        <div style={{ width: '94%', margin: '10px auto 0 auto', textAlign: 'center' }}>
+                            {/* Dropdown Menu */}
+                            <Select
+                                value={selectedOption}
+                                onChange={handleSelectChange}
+                                displayEmpty
+                                inputProps={{ 'aria-label': 'Without label' }}
+                                style={{width: '100%'}}
                             >
-                                <FontAwesomeIcon
-                                    icon={faSun}
-                                    style={{ color: '#0088FF' }}
-                                />{' '}
-                                &nbsp; &nbsp;
-                                <span style={{ color: '#0088FF' }}>Intensity</span>
-                            </div>
-                            <span style={{ width: '35px' }}>{lightValue}%</span>
-                        </div>
-                        <div
-                            style={{
-                                width: '94%',
-                                margin: '10px auto 0 auto',
-                            }}
-                        >
-                            <Slider
-                                defaultValue={0}
-                                aria-label="Default"
-                                disabled={!checkedLight}
-                                getAriaValueText={(value) => {
-                                    setLightValue(value);
-                                }}
-                                sx={{
-                                    color: checkedLight ? '#0088FF' : 'grey.500',
-                                }}
-                            />
+                                <MenuItem value="" disabled>
+                                    Select Option
+                                </MenuItem>
+                                <MenuItem value="HEART">HEART</MenuItem>
+                                <MenuItem value="HEART_SMALL">HEART_SMALL</MenuItem>
+                                <MenuItem value="HAPPY">HAPPY</MenuItem>
+                                <MenuItem value="SMILE">SMILE</MenuItem>
+                                <MenuItem value="SAD">SAD</MenuItem>
+                            </Select>
                         </div>
                     </div>
                     <div className={`${styles.container} ${styles.roomContainer} ${styles.roomBrightness}`}>
