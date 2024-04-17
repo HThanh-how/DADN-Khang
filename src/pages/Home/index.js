@@ -197,7 +197,7 @@ function Home() {
     }
 
     useEffect(() => {
-        fetch(`/send_data?value=${fanValue}&type=int`).then(res => res.json()).then(data => {
+        fetch(`/send_light?value=${selectedOption}`).then(res => res.json()).then(data => {
             console.log({data});
         })
     }, [selectedOption])

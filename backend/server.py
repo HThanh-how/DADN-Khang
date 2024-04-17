@@ -37,6 +37,11 @@ def get_temperature():
             'humidity': iotState.humidity,
             'brightness': iotState.brightness}
 
+@app.route('/send_ight')
+def update_fan():
+    value = request.args.get('value')
+    print(value)
+
 @app.route('/send_data')
 def update_fan():
     value = request.args.get('value')
