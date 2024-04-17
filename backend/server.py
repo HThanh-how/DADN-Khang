@@ -23,6 +23,7 @@ app.config['MQTT_TLS_ENABLED'] = False
 MQTT_USERNAME = "trinhxuankhai"
 MQTT_TOPIC_PUB = MQTT_USERNAME + "/feeds/input"
 MQTT_TOPIC_PUB_ALARM = MQTT_USERNAME + "/feeds/alarm"
+MQTT_TOPIC_PUB_LIGHT = MQTT_USERNAME + "/feeds/light"
 MQTT_TOPIC_SUB = MQTT_USERNAME + "/feeds/output"
 mqtt_client = Mqtt(app)
 
@@ -40,7 +41,18 @@ def get_temperature():
 @app.route('/send_light')
 def send_light():
     value = request.args.get('value')
-    print(value)
+    type = request.args.get('type')
+
+    if type == 'string':
+        iotState.light['value'] = value
+    else:
+        iotState.light['state'] = True if value == 'true' else False
+
+    if iotState.light['state']:
+        publish_result = mqtt_client.publish(MQTT_TOPIC_PUB_LIGHT, value)
+    else:
+        publish_result = mqtt_client.publish(MQTT_TOPIC_PUB_LIGHT, 'NOTHING')
+
     return {'value': value}
 
 @app.route('/send_data')

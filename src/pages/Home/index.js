@@ -54,8 +54,6 @@ function Home() {
     const [checkedLight, setCheckedLight] = useState(false)
     const [checkedAlarm, setCheckedAlarm] = useState(false)
     const [fanValue, setFanValue] = useState()
-    const [lightValue, setLightValue] = useState()
-
 
     const [dataTemp, setDataTemp] = useState([34])
     const [dataHumid, setDataHumid] = useState([67])
@@ -197,15 +195,18 @@ function Home() {
     }
 
     useEffect(() => {
-        fetch(`/send_light?value=${selectedOption}`).then(res => res.json()).then(data => {
+        fetch(`/send_light?value=${selectedOption}&type=string`).then(res => res.json()).then(data => {
             console.log({data});
         })
     }, [selectedOption])
+    useEffect(() => {
+        fetch(`/send_light?value=${checkedLight}&type=bool`).then(res => res.json()).then(data => {
+            console.log({data});
+        })
+    }, [checkedLight])
 
     useDataSender(fanValue, 'int', 'fan', fanValue);
     useDataSender(checkedFan, 'bool', 'fan', checkedFan);
-    useDataSender(lightValue, 'int', 'light', lightValue);
-    useDataSender(checkedLight, 'bool', 'light', checkedLight);
 
     useEffect(() => {
         // Function to fetch data from the API
