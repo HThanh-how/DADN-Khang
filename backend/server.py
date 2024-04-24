@@ -43,12 +43,14 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 #     DeepFace.extract_faces(ref_image, detector_backend="yunet")
 # except:
 #     pass
-DeepFace.find(img_path=np.zeros([224, 224, 3]),
-              db_path='./backend/file_db',
-              detector_backend='skip',
-              model_name='GhostFaceNet',
-              silent=True)
-
+try:
+    DeepFace.find(img_path=np.zeros([224, 224, 3]),
+                db_path='./backend/file_db',
+                detector_backend='skip',
+                model_name='GhostFaceNet',
+                silent=True)
+except:
+    pass
 @app.route('/fetch_data')
 def get_temperature():  
     return {'temperature': iotState.temperature,
@@ -167,8 +169,7 @@ def get_bbox():
                                          db_path='./backend/file_db',
                                          detector_backend='skip',
                                          model_name='GhostFaceNet',
-                                         silent=True)
-            
+                                         silent=True)[0]
             if len(recog_result) == 0:
                 verify = False
             else:

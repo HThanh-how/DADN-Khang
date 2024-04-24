@@ -9,8 +9,13 @@ import { faSun } from '@fortawesome/free-regular-svg-icons'
 import ReactApexChart from 'react-apexcharts'
 import { useNavigate } from 'react-router-dom'
 import WebcamCapture from '../../components/Webcam/webcam.js';
+import { PiMicrophone } from "react-icons/pi";
 
 import { Select, MenuItem } from '@mui/material'; // Import Select and MenuItem
+import VoiceRecognition from '../../components/voice'; // Import the VoiceRecognition component
+
+
+
 
 
 async function sendDataToServer(value, type, name) {
@@ -53,6 +58,7 @@ function Home() {
     const [checkedFan, setCheckedFan] = useState(false)
     const [checkedLight, setCheckedLight] = useState(false)
     const [checkedAlarm, setCheckedAlarm] = useState(false)
+    const [checkedVoice, setCheckedVoice] = useState(false)
     const [fanValue, setFanValue] = useState()
 
     const [dataTemp, setDataTemp] = useState([34])
@@ -362,16 +368,39 @@ function Home() {
                         </div>
                     </div>
                 </div>
-                <div className={`${styles.container} ${styles.alarmContainer} ${styles.theftAlarm}`}>
-                    <h4>Theft Alarm</h4>
-                    <div className={styles.switchAlarm}>
-                        <Switch
-                            checked={checkedAlarm}
-                            onChange={(e) => setCheckedAlarm(e.target.checked)}
-                            inputProps={{ 'aria-label': 'controlled' }}
-                        />
+                <div className={styles.deviceContainer}>
+                    <div className={`${styles.container} ${styles.alarmContainer} ${styles.theftAlarm}`}>
+                    <h4 style = {{fontSize: '20pt'}}>Alarm</h4>
+                        <div className={styles.switchAlarm}>
+                            <Switch
+                                checked={checkedAlarm}
+                                onChange={(e) => setCheckedAlarm(e.target.checked)}
+                                inputProps={{ 'aria-label': 'controlled' }}
+                            />
+                        </div>
+                    </div>
+                    <div className={`${styles.container} ${styles.alarmContainer} ${styles.voice}`}>
+                    <h4 style = {{fontSize: '20pt'}}>Voice</h4>
+                    <div>
+                        {/* Other components and content */}
+                            <VoiceRecognition /> {/* Render the VoiceRecognition component */}
+                    </div>
+                    {/* <div className={styles.iconContainer} style={{ textAlign: 'center' }}>
+                        <PiMicrophone onClick={startSpeechToText} />
+                        <VoiceRecognition />
+                    </div> */}
+
+
+                        {/* <div className={styles.switchAlarm}>
+                            <Switch
+                                checked={checkedVoice}
+                                onChange={(e) => setCheckedVoice(e.target.checked)}
+                                inputProps={{ 'aria-label': 'controlled' }}
+                            />
+                        </div> */}  
                     </div>
                 </div>
+                
             </div>
         </div>
     )
