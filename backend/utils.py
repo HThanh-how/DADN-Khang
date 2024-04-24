@@ -1,3 +1,6 @@
+import os
+from PIL import Image
+
 class IOTState:
     def __init__(self):
         self.fan: dict = {'state': 0, # 0 - off, 1 - on
@@ -7,3 +10,8 @@ class IOTState:
         self.temperature: float = 0
         self.humidity: float = 0
         self.brightness: float = 0
+        
+def save_image_db(name, image, upload_folder):
+    image_path = os.path.join(upload_folder, name, f'0.jpeg')
+    face_image = Image.fromarray(image)
+    face_image.save(image_path)

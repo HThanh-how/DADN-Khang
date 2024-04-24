@@ -3,7 +3,7 @@ import io
 import base64
 import numpy as np
 from PIL import Image
-from utils import IOTState
+from utils import IOTState, save_image_db
 from flask_mqtt import Mqtt
 from flask_cors import CORS 
 from deepface import DeepFace
@@ -33,16 +33,21 @@ UPLOAD_FOLDER = 'backend/file_db'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Warming up code
-ref_image_path = r"backend/file_db/khánh/0.jpeg"
-ref_image = np.array(Image.open(ref_image_path))[:, :, ::-1]
-verify = DeepFace.verify(ref_image, 
-                         ref_image,
-                         detector_backend='skip',
-                         model_name='GhostFaceNet')['verified']
-try:
-    DeepFace.extract_faces(ref_image, detector_backend="yunet")
-except:
-    pass
+# ref_image_path = r"backend/file_db/khánh/0.jpeg"
+# ref_image = np.array(Image.open(ref_image_path))[:, :, ::-1]
+# verify = DeepFace.verify(ref_image, 
+#                          ref_image,
+#                          detector_backend='skip',
+#                          model_name='GhostFaceNet')['verified']
+# try:
+#     DeepFace.extract_faces(ref_image, detector_backend="yunet")
+# except:
+#     pass
+DeepFace.find(img_path=np.zeros([224, 224, 3]),
+              db_path='./backend/file_db',
+              detector_backend='skip',
+              model_name='GhostFaceNet',
+              silent=True)
 
 @app.route('/fetch_data')
 def get_temperature():  
@@ -105,7 +110,6 @@ def update_fan():
             print(publish_result)
     except:
         pass
-     
     return {'value': value}
 
 @app.route('/save_image', methods=['POST', 'GET'])
@@ -124,14 +128,9 @@ def save_image():
 
     x, y, w, h = bbox
     face_region = image[y:y+h, x:x+w, ::-1]
-
-    os.makedirs(os.path.join(UPLOAD_FOLDER, name), exist_ok=True)
-    image_path = os.path.join(UPLOAD_FOLDER, name, f'0.jpeg')
-    face_image = Image.fromarray(face_region)
-    face_image.save(image_path)
-
-    return jsonify({'message': 'Image saved successfully',
-                    'image_path': image_path}), 200
+    save_image_db(name, face_region, UPLOAD_FOLDER)
+    
+    return jsonify({'message': 'Image saved successfully'}), 200
 
 @app.route('/process_frame', methods=['POST', 'GET'])
 def get_bbox():
@@ -152,17 +151,28 @@ def get_bbox():
         bboxes = []
         detect_results = DeepFace.extract_faces(image, detector_backend="yunet")
 
-        ref_image_path = r"backend/file_db/khánh/0.jpeg"
-        ref_image = np.array(Image.open(ref_image_path))[:, :, ::-1]
+        # ref_image_path = r"backend/file_db/khánh/0.jpeg"
+        # ref_image = np.array(Image.open(ref_image_path))[:, :, ::-1]
 
         for detect_result in detect_results:
             detect_result = detect_result['facial_area']
             face_region = image[detect_result['y']:detect_result['y']+detect_result['h'], detect_result['x']:detect_result['x']+detect_result['w']]
             
-            verify = DeepFace.verify(face_region, 
-                                     ref_image,
-                                     detector_backend='skip',
-                                     model_name='GhostFaceNet')['verified']
+            # verify = DeepFace.verify(face_region, 
+            #                          ref_image,
+            #                          detector_backend='skip',
+            #                          model_name='GhostFaceNet')['verified']
+            
+            recog_result = DeepFace.find(img_path=face_region,
+                                         db_path='./backend/file_db',
+                                         detector_backend='skip',
+                                         model_name='GhostFaceNet',
+                                         silent=True)
+
+            if len(recog_result) == 0:
+                verify = False
+            else:
+                verify = True
             
             if not verify:
                 publish_result = mqtt_client.publish(MQTT_TOPIC_PUB_ALARM, 1)
