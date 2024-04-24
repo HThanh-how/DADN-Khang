@@ -73,6 +73,12 @@ def send_light():
 
     return {'value': value}
 
+@app.route('/send_voice')
+def send_voice():
+    value = request.args.get('value')
+    print(value)
+    return {'value': value}
+
 @app.route('/send_data')
 def update_fan():
     value = request.args.get('value')

@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import useSpeechToText from 'react-hook-speech-to-text';
 import { BsFillMicFill } from "react-icons/bs";
 
-export default function VoiceRecognition() {
+export default function VoiceRecognition( {setQuery} ) {
   const {
     error,
     interimResult,
@@ -20,6 +20,11 @@ export default function VoiceRecognition() {
   });
 
   if (error) return <p>Web Speech API is not available in this browser 🤷‍</p>;
+
+  useEffect(() => {
+    // const newWord = interimResult.split(" ").slice(-1)[0];
+    // setQuery((old) => old + " " + newWord);
+  }, []);
 
   return (
     <div>

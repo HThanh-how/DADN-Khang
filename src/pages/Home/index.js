@@ -15,9 +15,6 @@ import { Select, MenuItem } from '@mui/material'; // Import Select and MenuItem
 import VoiceRecognition from '../../components/voice'; // Import the VoiceRecognition component
 
 
-
-
-
 async function sendDataToServer(value, type, name) {
     try {
         const response = await fetch(`/send_data?value=${value}&type=${type}&name=${name}`);
@@ -55,6 +52,7 @@ function Home() {
         period = 'night'
     }
 
+    const [query, setQuery] = useState("");
     const [checkedFan, setCheckedFan] = useState(false)
     const [checkedLight, setCheckedLight] = useState(false)
     const [checkedAlarm, setCheckedAlarm] = useState(false)
@@ -215,6 +213,12 @@ function Home() {
             console.log({data});
         })
     }, [checkedAlarm])
+    useEffect(() => {
+        fetch(`/send_voice?value=${query}`).then(res => res.json()).then(data => {
+            console.log({data});
+        })
+    }, [query])
+
 
     useDataSender(fanValue, 'int', 'fan', fanValue);
     useDataSender(checkedFan, 'bool', 'fan', checkedFan);
@@ -382,8 +386,7 @@ function Home() {
                     <div className={`${styles.container} ${styles.alarmContainer} ${styles.voice}`}>
                     <h4 style = {{fontSize: '20pt'}}>Voice</h4>
                     <div>
-                        {/* Other components and content */}
-                            <VoiceRecognition /> {/* Render the VoiceRecognition component */}
+                        <VoiceRecognition setQuery={setQuery}/>
                     </div>
                     {/* <div className={styles.iconContainer} style={{ textAlign: 'center' }}>
                         <PiMicrophone onClick={startSpeechToText} />
