@@ -1,6 +1,0 @@
-numpy
-flask
-deepface
-flask_cors
-flask_mqtt
-ultralytics

@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/DADN-Khang/static/css/main.f9867978.css",
+    "main.js": "/DADN-Khang/static/js/main.e78f0f67.js",
+    "static/js/453.54abcdce.chunk.js": "/DADN-Khang/static/js/453.54abcdce.chunk.js",
+    "index.html": "/DADN-Khang/index.html",
+    "main.f9867978.css.map": "/DADN-Khang/static/css/main.f9867978.css.map",
+    "main.e78f0f67.js.map": "/DADN-Khang/static/js/main.e78f0f67.js.map",
+    "453.54abcdce.chunk.js.map": "/DADN-Khang/static/js/453.54abcdce.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f9867978.css",
+    "static/js/main.e78f0f67.js"
+  ]
+}
