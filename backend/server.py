@@ -41,7 +41,6 @@ try:
                 silent=True)
 except:
     pass
-
 @app.route('/fetch_data')
 def get_temperature():  
     return {'temperature': iotState.temperature,
