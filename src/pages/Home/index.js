@@ -10,7 +10,7 @@ import ReactApexChart from 'react-apexcharts'
 import { useNavigate } from 'react-router-dom'
 import WebcamCapture from '../../components/Webcam/webcam.js';
 import { PiMicrophone } from "react-icons/pi";
-
+import { isTurnOnLight } from '../../components/voice.js';
 import { Select, MenuItem } from '@mui/material'; // Import Select and MenuItem
 import VoiceRecognition from '../../components/voice'; // Import the VoiceRecognition component
 
@@ -34,6 +34,8 @@ function useDataSender(value, type, name, dependency) {
 function Home() {
     const navigate = useNavigate()
 
+
+    
     const user = {
         name: 'Khanh',
         isLogged: true,
@@ -68,6 +70,14 @@ function Home() {
         setSelectedOption(event.target.value);
     };
     
+    useEffect(() => {
+        const interval = setInterval(() => {
+          setCheckedFan(isTurnOnLight);
+        console.log(isTurnOnLight);
+        }, 500);
+        return () => clearInterval(interval);
+    }, []);
+
     let optionsHumid = {
         chart: {
             height: 350,
