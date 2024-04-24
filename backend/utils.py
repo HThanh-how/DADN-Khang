@@ -12,6 +12,6 @@ class IOTState:
         self.brightness: float = 0
         
 def save_image_db(name, image, upload_folder):
-    image_path = os.path.join(upload_folder, name, f'0.jpeg')
+    image_path = os.path.join(upload_folder, f'{name}.jpeg')
     face_image = Image.fromarray(image)
     face_image.save(image_path)

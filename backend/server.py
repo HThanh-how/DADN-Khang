@@ -168,7 +168,7 @@ def get_bbox():
                                          detector_backend='skip',
                                          model_name='GhostFaceNet',
                                          silent=True)
-
+            
             if len(recog_result) == 0:
                 verify = False
             else:
