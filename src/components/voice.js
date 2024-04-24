@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import useSpeechToText from 'react-hook-speech-to-text';
 import { BsFillMicFill } from "react-icons/bs";
 
-export default function VoiceRecognition() {
+export default function VoiceRecognition( {setQuery} ) {
   const {
     error,
     interimResult,
