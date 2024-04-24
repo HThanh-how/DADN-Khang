@@ -33,21 +33,14 @@ UPLOAD_FOLDER = 'backend/file_db'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Warming up code
-# ref_image_path = r"backend/file_db/khánh/0.jpeg"
-# ref_image = np.array(Image.open(ref_image_path))[:, :, ::-1]
-# verify = DeepFace.verify(ref_image, 
-#                          ref_image,
-#                          detector_backend='skip',
-#                          model_name='GhostFaceNet')['verified']
-# try:
-#     DeepFace.extract_faces(ref_image, detector_backend="yunet")
-# except:
-#     pass
-DeepFace.find(img_path=np.zeros([224, 224, 3]),
-              db_path='./backend/file_db',
-              detector_backend='skip',
-              model_name='GhostFaceNet',
-              silent=True)
+try:
+    DeepFace.find(img_path=np.zeros([224, 224, 3]),
+                db_path='./backend/file_db',
+                detector_backend='skip',
+                model_name='GhostFaceNet',
+                silent=True)
+except:
+    pass
 
 @app.route('/fetch_data')
 def get_temperature():  
@@ -151,23 +144,15 @@ def get_bbox():
         bboxes = []
         detect_results = DeepFace.extract_faces(image, detector_backend="yunet")
 
-        # ref_image_path = r"backend/file_db/khánh/0.jpeg"
-        # ref_image = np.array(Image.open(ref_image_path))[:, :, ::-1]
-
         for detect_result in detect_results:
             detect_result = detect_result['facial_area']
             face_region = image[detect_result['y']:detect_result['y']+detect_result['h'], detect_result['x']:detect_result['x']+detect_result['w']]
-            
-            # verify = DeepFace.verify(face_region, 
-            #                          ref_image,
-            #                          detector_backend='skip',
-            #                          model_name='GhostFaceNet')['verified']
-            
+        
             recog_result = DeepFace.find(img_path=face_region,
                                          db_path='./backend/file_db',
                                          detector_backend='skip',
                                          model_name='GhostFaceNet',
-                                         silent=True)
+                                         silent=True)[0]
             
             if len(recog_result) == 0:
                 verify = False
@@ -207,6 +192,6 @@ def handle_mqtt_message(client, userdata, message):
     iotState.brightness = brightness
 
 if __name__ == '__main__':
-   app.run(port=5001, debug=True)
+    app.run(port=5001, debug=True)
 
 
