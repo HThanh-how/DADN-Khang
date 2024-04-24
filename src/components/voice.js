@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import useSpeechToText from 'react-hook-speech-to-text';
 import { BsFillMicFill } from "react-icons/bs";
 
@@ -18,7 +18,12 @@ export default function VoiceRecognition() {
         interimResults: true,
     }
   });
-
+  useEffect(() => {
+    fetch(`/send_voice?value=${results}`)
+    .then(res => res.json())
+    .then(data => console.log(data))
+    .catch(err => console.log(err))
+  },[results])
   if (error) return <p>Web Speech API is not available in this browser 🤷‍</p>;
 
   return (
